@@ -1,0 +1,16 @@
+{% extends "apps/layout.html" %}
+
+{% block body %}
+    <h2><b><u> SheSafe </u></b></h2>
+
+        {% for auc in aucs %}
+        {% if auc.auc_url is None%}
+        <div class="listings"><img src="" border="2" alt="Image not uploaded" align="left" height="100" width="100">
+        <div class="info"><h2><a href="{% url 'listingpage' auclink=auc.id %}">{{ auc.auc_title }}</a></h2><br>
+        <b>PRICE:</b> ${{ auc.highest_bid }}<br>
+        <b>ABOUT:</b> {{ auc.auc_des }}<br><br>
+        <b>USER:</b> {{ auc.userid.username}}
+        </div>
+
+
+{% endblock %}
