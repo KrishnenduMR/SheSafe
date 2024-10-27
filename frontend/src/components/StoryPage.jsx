@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, useMapEvents, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -27,6 +27,8 @@ const StoryPage = () => {
     const [location, setLocation] = useState(null);
     const [success, setSuccess] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
 
     const handleChange = (e) => {
         setStory(e.target.value);
@@ -47,6 +49,8 @@ const StoryPage = () => {
 
     const handleSearch = async () => {
         if (!searchTerm) return;
+        setLoading(true);
+        setError('');
 
         try {
             const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(searchTerm)}`);
@@ -56,10 +60,13 @@ const StoryPage = () => {
                 setLocation({ lat: parseFloat(lat), lng: parseFloat(lon) });
                 map.setView([lat, lon], 13); // Change map view to the searched location
             } else {
-                alert("Location not found.");
+                setError("Location not found.");
             }
         } catch (error) {
             console.error("Error fetching location:", error);
+            setError("An error occurred while fetching the location.");
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -71,7 +78,11 @@ const StoryPage = () => {
         });
 
         return location === null ? null : (
-            <Marker position={location} />
+            <Marker position={location}>
+                <Popup>
+                    Latitude: {location.lat}, Longitude: {location.lng}
+                </Popup>
+            </Marker>
         );
     };
 
@@ -101,7 +112,9 @@ const StoryPage = () => {
                         placeholder="Search for a location..."
                         className="form-control mb-2"
                     />
-                    <button onClick={handleSearch} className="btn btn-secondary">Search</button>
+                    <button onClick={handleSearch} className="btn btn-secondary" disabled={loading}>
+                        {loading ? 'Searching...' : 'Search'}
+                    </button>
                 </div>
 
                 <MapContainer center={[13.0827, 80.2707]} zoom={13} style={{ height: '400px', width: '100%', margin: '10px 0' }}>
@@ -111,12 +124,15 @@ const StoryPage = () => {
                     />
                     <LocationMarker />
                 </MapContainer>
+
                 {location && (
                     <p>
                         Selected location: Latitude: {location.lat}, Longitude: {location.lng}
                     </p>
                 )}
+
                 {success && <p className="alert alert-success">Your story has been submitted successfully!</p>}
+                {error && <p className="alert alert-danger">{error}</p>}
             </div>
         </div>
     );
