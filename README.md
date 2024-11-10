@@ -100,13 +100,16 @@ To set up SheSafe locally, follow these instructions:
 - The **Plan My Journey** feature enables users to check the map for potentially dangerous areas, making it easier to plan a safe route.
 
 ## Technologies Used
-
 - **React**: For building the user interface.
 - **Bootstrap**: For styling the platform to create a consistent, user-friendly layout.
 - **Django**: For the backend server to handle requests.
 - **PostgreSQL**: For data storage.
-- **Location Services**: Integrated to facilitate real-time tracking and location identification.
-- **AI/ML Libraries**: Used for voice and gesture detection.
+- **Location Services**: Integrated with **Google Maps API** for real-time location tracking and journey planning.
+- **AI/ML Libraries**: Used for voice and gesture detection, leveraging **Google Cloud AI** services.
+- **Cloud Storage**: **Firebase Storage** for scalable media file storage (images, audio, video) and real-time data syncing.
+- **Real-Time Database**: **Firebase Realtime Database** for instant updates on safety alerts and emergency responses.
+- **Cloud Functions**: **Firebase Cloud Functions** for handling background tasks like processing emergency alerts and location updates.
+
 
 ## Future Enhancements
 
